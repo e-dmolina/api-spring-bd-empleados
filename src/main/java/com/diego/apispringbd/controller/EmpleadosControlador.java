@@ -34,11 +34,15 @@ public class EmpleadosControlador {
 
     @PutMapping("/empleados/{id}")
     public Empleado actualizarEmpleado(@RequestBody Empleado empleado, @PathVariable Long id){
-        if (repositorioEmpleados.findById(id).isPresent()){
-            repositorioEmpleados.findById(id).
-        }else{
-            repositorioEmpleados.save(empleado);
-        }
+
+       return repositorioEmpleados.findById(id).map(e -> {
+           e.setNombre(empleado.getNombre());
+           e.setCargo(empleado.getCargo());
+           return repositorioEmpleados.save(e);
+       }).orElseGet(() -> {
+           //empleado.setId(id);
+           return repositorioEmpleados.save(empleado);
+       });
     }
 
     @DeleteMapping("/empleados/{id}")
